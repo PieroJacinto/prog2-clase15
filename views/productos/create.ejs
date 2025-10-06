@@ -4,37 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea, select { padding: 10px; width: 100%; max-width: 400px; border: 1px solid #ccc; border-radius: 4px; }
+        textarea { min-height: 100px; resize: vertical; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .error-box { background: #ffe6e6; border: 1px solid red; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .error-box ul { margin: 10px 0; }
+        .error-box li { color: red; }
+        input.is-invalid, textarea.is-invalid, select.is-invalid {
+            border: 2px solid red;
+        }
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .checkbox-group { margin-top: 10px; }
+        .checkbox-item { margin: 5px 0; }
+        .checkbox-item input { width: auto; }
+    </style>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <%- include('../partials/header',{h1:h1}) %>
+    <%- include('../partials/header', {h1: h1}) %>
 
-    <form action="/productos/create" method="POST" enctype="multipart/form-data">
-        <div>
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre">
+    <!-- ============================================ -->
+    <!-- MOSTRAR TODOS LOS ERRORES ARRIBA            -->
+    <!-- ============================================ -->
+    <% if (errors.length > 0) { %>
+        <div class="error-box">
+            <strong>⚠️ Por favor corrige los siguientes errores:</strong>
+            <ul>
+                <% errors.forEach(error => { %>
+                    <li><%= error.msg %></li>
+                <% }) %>
+            </ul>
         </div>
+    <% } %>
+
+    <form action="/productos/create" method="POST" enctype="multipart/form-data" novalidate>
         <div>
-            <label for="precio">Precio:</label>
-            <input type="number" id="precio" name="precio" step="0.01">
+            <label for="nombre">Nombre del Producto</label>
+            <input type="text" id="nombre" name="nombre" value="<%= oldData.nombre || '' %>">
+            <!-- MENSAJE DE ERROR -->
+            <% const errorNombre = errors.find(e => e.path === 'nombre'); %>
+            <% if (errorNombre) { %>
+                <span class="error-msg">
+                    <%= errorNombre.msg %>
+                </span>
+            <% } %>
         </div>
+
         <div>
-            <label for="descripcion">Descripcion:</label>
-            <textarea name="descripcion" id="descripcion"></textarea>
+            <label for="precio">Precio</label>
+            <input type="number" id="precio" name="precio" step="0.01" value="<%= oldData.precio || '' %>">
+            <!-- MENSAJE DE ERROR -->
+            <% const errorPrecio = errors.find(e => e.path === 'precio'); %>
+            <% if (errorPrecio) { %>
+                <span class="error-msg">
+                    <%= errorPrecio.msg %>
+                </span>
+            <% } %>
         </div>
+
+        <div>
+            <label for="descripcion">Descripción</label>
+            <textarea name="descripcion" id="descripcion"><%= oldData.descripcion || '' %></textarea>
+            <!-- MENSAJE DE ERROR -->
+            <% const errorDescripcion = errors.find(e => e.path === 'descripcion'); %>
+            <% if (errorDescripcion) { %>
+                <span class="error-msg">
+                    <%= errorDescripcion.msg %>
+                </span>
+            <% } %>
+        </div>
+
         <div>
             <label for="usuario_id">Dueño</label>
             <select name="usuario_id" id="usuario_id">
-                <option value=""> Seleccionar Usuario</option>
+                <option value="">Seleccionar Usuario</option>
                 <% usuarios.forEach(usuario => { %>
-                    <option value="<%= usuario.id %>"><%= usuario.nombre %></option>
+                    <option value="<%= usuario.id %>" <%= (oldData.usuario_id == usuario.id) ? 'selected' : '' %>>
+                        <%= usuario.nombre %>
+                    </option>
                 <% }) %>
             </select>
+            <!-- MENSAJE DE ERROR -->
+            <% const errorUsuario = errors.find(e => e.path === 'usuario_id'); %>
+            <% if (errorUsuario) { %>
+                <span class="error-msg">
+                    <%= errorUsuario.msg %>
+                </span>
+            <% } %>
         </div>
 
-        <!-- agregamos campo poara multiples archivos -->
-         <div>
-            <label for="imagenes_producto">Imagenes del producto (1-5)</label>
+        <div>
+            <label for="imagenes_producto">Imágenes del producto (1-5)</label>
             <input  type="file"
                     id="imagenes_producto"
                     name="imagenes_producto"
@@ -42,27 +110,43 @@
                     multiple
                     required
             >
-            <small>Selecciona entre 1 y 5 imagenes. Maximo 5 MB cada una. Formatos permitidos JPG, PNG y GIF</small>
-         </div>
-
-        <div>
-            <label for="usuario_id">Categorias</label>
-            <% categorias.forEach(categoria => { %>
-                <div>
-                    <input  type="checkbox"
-                            id="cat_<%=categoria.id%>"
-                            name="categorias"
-                            value="<%= categoria.id %>"
-                    >
-                    <label for="cat_<%=categoria.id%>"><%= categoria.nombre %></label>
-                </div>
-            <% }) %>
+            <small>Selecciona entre 1 y 5 imágenes. Máximo 5MB cada una. Formatos: JPG, PNG, GIF</small>
+            <!-- MENSAJE DE ERROR -->
+            <% const errorImagenes = errors.find(e => e.path === 'imagenes_producto'); %>
+            <% if (errorImagenes) { %>
+                <span class="error-msg">
+                    <%= errorImagenes.msg %>
+                </span>
+            <% } %>
         </div>
 
-        <button type="submit"> Crear Producto</button>
-        <a href="/productos">cancelar</a>
+        <div>
+            <label>Categorías</label>
+            <div class="checkbox-group">
+                <% 
+                let categoriasSeleccionadas = [];
+                if (oldData.categorias) {
+                    categoriasSeleccionadas = Array.isArray(oldData.categorias) 
+                        ? oldData.categorias 
+                        : [oldData.categorias];
+                }
+                %>
+                <% categorias.forEach(categoria => { %>
+                    <div class="checkbox-item">
+                        <input  type="checkbox"
+                                id="cat_<%= categoria.id %>"
+                                name="categorias"
+                                value="<%= categoria.id %>"
+                                <%= categoriasSeleccionadas.includes(categoria.id.toString()) ? 'checked' : '' %>
+                        >
+                        <label for="cat_<%= categoria.id %>"><%= categoria.nombre %></label>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
 
-
+        <button type="submit">Crear Producto</button>
+        <a href="/productos">Cancelar</a>
     </form>
 </body>
 </html>

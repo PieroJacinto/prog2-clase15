@@ -86,10 +86,13 @@ const productoController = {
                 title: 'Crear Producto',
                 h1: 'Nuevo Producto',
                 usuarios: usuarios,
-                categorias:categorias
-            })
+                categorias: categorias,
+                errors: [],      // AGREGAR
+                oldData: {}      // AGREGAR
+            });
         } catch (error) {
-            
+            console.log('Error cargando formulario:', error);
+            res.redirect('/productos');
         }
     },
     store: async (req,res) => {
@@ -133,15 +136,18 @@ const productoController = {
             res.redirect(`/productos/${nuevoProducto.id}`)
         } catch (error) {
             console.log('Error al crear producto:', error); // Agregado para debugging
-            // LIMPIEZA: Si hay un error y se subio el archivo, hay que eliminarlo
-            if(req.files){
-                req.files.forEach(file => {
-                    fs.unlink(file.path, (unlinkError) => {
-                        if(unlinkError) console.log('Error eliminando archivo: ', file.filename);                    
-                    });                                
-                });
-            }
-            res.redirect('/productos/create');
+             // Renderizar formulario con error
+            const usuarios = await Usuario.findAll();
+            const categorias = await Categoria.findAll();
+
+            res.render('productos/create', {
+                errors: [{ msg: 'Error al crear producto' }],
+                oldData: req.body,
+                title: 'Crear Producto',
+                h1: 'Nuevo Producto',
+                usuarios: usuarios,
+                categorias: categorias
+            });
         }
     },
     edit: async (req, res ) => {
