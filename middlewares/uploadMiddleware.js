@@ -21,14 +21,20 @@ const storage = multer.diskStorage({
         }
     }, 
     filename: (req, file, cb) => {
-        // req= request, ( datos de la peticion, tiene la info de la opeticion)
-        // file: informacion del archivo subido
-        //cb : callback para devolver el nombre
-        const timestamp = Date.now();
-        const extension = path.extname(file.originalname);
-        const newFileName = `usuario-${timestamp}-${extension}` 
-        cb(null, newFileName)
-    }
+            const timestamp = Date.now();
+            const extension = path.extname(file.originalname);
+            
+            // NOMBRE según el tipo de archivo
+            let prefijo = 'archivo';
+            if (file.fieldname === 'imagen_usuario') {
+                prefijo = 'usuario';
+            } else if (file.fieldname === 'imagen_producto') {
+                prefijo = 'producto';
+            }
+            
+            const newFileName = `${prefijo}-${timestamp}${extension}`;
+            cb(null, newFileName);
+        }
 });
 
 const upload = multer({

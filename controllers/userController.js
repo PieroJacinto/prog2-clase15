@@ -53,7 +53,9 @@ const userController = {
     create: async(req,res) => {
         res.render('usuarios/create',{
             title: 'Crear Usuario',
-            h1: 'Nuevo Usuario'
+            h1: 'Nuevo Usuario',
+            errors: [], ///AGREGO
+            oldData: {} // AGREGO
         })
     },
     store: async(req, res) => {
@@ -95,14 +97,13 @@ const userController = {
         } catch (error) {
             console.log('Error creando usuario:', error);
 
-            // LIMPIEZA: Si hay un error y se subio el archivo, hay que eliminarlo
-            if(req.file){
-                fs.unlink(req.file.path, (unlinkError) => {
-                    if(unlinkError) console.log(('Error eliminandio archivo: ', unlinkError));                    
-                });
-            }
-            // luego redirijo nmuevamente a el formulario de creacion, para que lo vuelva a intentar
-            res.redirect('usuarios/create')
+           // luego redirijo nmuevamente a el formulario de creacion, para que lo vuelva a intentar
+            res.render('usuarios/create', {
+                errors: [{ msg: 'Error al crear usuario' }],
+                oldData: req.body,
+                title: 'Crear Usuario',
+                h1: "Nuevo Usuario"
+            });
         }
     }
     
