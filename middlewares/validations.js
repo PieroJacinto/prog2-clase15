@@ -1,5 +1,5 @@
 const {body, validationResult } = require("express-validator");
-const { Usuario, Producto } = require('../database/models');
+const { Usuario, Producto, Categoria } = require('../database/models');
 const fs = require('fs');
 const path = require('path'); //AGREGAR
 const validations = {
@@ -175,64 +175,67 @@ const validations = {
     },*/
 
     // MIDDLEWARE PARA MANEJAR ERRORES    
-    handleErrors: async (req, res, next) => {  // ⬅️ Agregar async
-        const errors = validationResult(req);
-        
-        // Early return - Si NO hay errores, continuar
-        if (errors.isEmpty()) {
-            return next();
-        }
-        
-        // Si llegamos aquí, HAY errores
-        console.log("❌ Errores de validación encontrados:", errors.array());
-        
-        // Limpieza de archivos
-        if (req.file) {
-            fs.unlink(req.file.path, (err) => {
-                if (err) console.log('Error eliminando archivo:', err);
-            });
-        }
-        
-        if (req.files) {
-            req.files.forEach(file => {
-                fs.unlink(file.path, (err) => {
-                    if (err) console.log('Error eliminando archivo:', file.filename);
-                });
-            });
-        }
-        
-        // Determinar qué formulario renderizar
-        const isProducto = req.path.includes('producto');
-        
-        if (isProducto) {
-            try {
-                // ⬅️ Usar await en lugar de .then()
-                const usuarios = await Usuario.findAll();
-                const categorias = await Categoria.findAll();
-                
-                return res.render('productos/create', {
-                    errors: errors.array(),
-                    oldData: req.body,
-                    title: 'Crear Producto',
-                    h1: 'Nuevo Producto',
-                    usuarios: usuarios,
-                    categorias: categorias
-                });
-                
-            } catch (err) {
-                console.log('Error cargando datos:', err);
-                return res.redirect('/productos/create');
-            }
-        }
-        
-        // Para usuarios
-        return res.render('usuarios/create', {
-            errors: errors.array(),
-            oldData: req.body,
-            title: 'Crear Usuario',
-            h1: 'Nuevo Usuario'
+    handleErrors: async (req, res, next) => {
+    const errors = validationResult(req);
+    
+    // Early return - Si NO hay errores, continuar
+    if (errors.isEmpty()) {
+        return next();
+    }
+    
+    // Si llegamos aquí, HAY errores
+    console.log("❌ Errores de validación encontrados:", errors.array());
+    console.log("📍 URL detectada:", req.originalUrl); // Para debugging
+    
+    // Limpieza de archivos
+    if (req.file) {
+        fs.unlink(req.file.path, (err) => {
+            if (err) console.log('Error eliminando archivo:', err);
         });
     }
+    
+    if (req.files) {
+        req.files.forEach(file => {
+            fs.unlink(file.path, (err) => {
+                if (err) console.log('Error eliminando archivo:', file.filename);
+            });
+        });
+    }
+    
+    // ✅ CORRECCIÓN: Usar originalUrl en lugar de path
+    const isProducto = req.originalUrl.includes('producto');
+    
+    if (isProducto) {
+        try {
+            const usuarios = await Usuario.findAll();
+            const categorias = await Categoria.findAll();
+            
+            console.log("✅ Usuarios cargados:", usuarios.length);
+            console.log("✅ Categorías cargadas:", categorias.length);
+            
+            return res.render('productos/create', {
+                errors: errors.array(),
+                oldData: req.body,
+                title: 'Crear Producto',
+                h1: 'Nuevo Producto',
+                usuarios: usuarios,
+                categorias: categorias
+            });
+            
+        } catch (err) {
+            console.log('❌ Error cargando datos:', err);
+            return res.redirect('/productos/create');
+        }
+    }
+    
+    // Para usuarios
+    return res.render('usuarios/create', {
+        errors: errors.array(),
+        oldData: req.body,
+        title: 'Crear Usuario',
+        h1: 'Nuevo Usuario'
+    });
+}
 
 }
 
