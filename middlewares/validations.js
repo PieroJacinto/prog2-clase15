@@ -9,12 +9,12 @@ const validations = {
         body('nombre')
             .notEmpty()
             .withMessage('El nombre es obligatorio')
-            .isLength({ min:2. ,max: 100})
+            .isLength({ min:2 ,max: 100})
             .withMessage('El nombre debe tener entre 2 y 100 caracteres') //agrrego
             .trim(),
         body('email')
             .notEmpty()
-            .withMessage('El nombre es obligatorio')
+            .withMessage('El email es obligatorio')
             .isEmail()
             .withMessage('Debe ser un email valido')
             .normalizeEmail()// conviuerte a minusculas y lo normaliza

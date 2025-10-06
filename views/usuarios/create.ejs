@@ -38,7 +38,8 @@
 
           <div>
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="<%= (oldData.email && oldData.email.length > 1) ? oldData.email : '' %>">
+            <input type="email" id="email" name="email" 
+            value="<%= (oldData.email && oldData.email !== '@' && oldData.email.length > 1) ? oldData.email : '' %>">
         </div>
 
         <div>
