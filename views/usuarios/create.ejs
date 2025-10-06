@@ -13,13 +13,27 @@
         .error-box { background: #ffe6e6; border: 1px solid red; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
         .error-box ul { margin: 10px 0; }
         .error-box li { color: red; }
+        /* Borde rojo cuando hay error */
+        input.is-invalid {
+            border: 2px solid red;
+        }
+        
+        /* Mensaje de error en rojo */
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+       
     </style>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <%- include('../partials/header') %>
 
-    <!-- MOSTRAR TODOS LOS ERRORES ARRIBA -->
+    <!-- ============================================ -->
+    <!-- OPCIÓN 1: MOSTRAR TODOS LOS ERRORES ARRIBA   -->
+    <!-- ============================================ -->
     <% if (errors.length > 0) { %>
         <div class="error-box">
             <strong>⚠️ Por favor corrige los siguientes errores:</strong>
@@ -34,12 +48,27 @@
         <div>
             <label for="nombre">Nombre</label>
             <input type="text" id="nombre" name="nombre" value="<%= oldData.nombre || '' %>">
+            <!-- MENSAJE DE ERROR -->
+            <% const errorNombre = errors.find(e => e.path === 'nombre');%>
+            <% if (errorNombre) { %>
+                <span class="error-msg">
+                    <%= errorNombre.msg %>
+                </span>
+            <% } %>
         </div>
 
           <div>
             <label for="email">Email</label>
             <input type="email" id="email" name="email" 
             value="<%= (oldData.email && oldData.email !== '@' && oldData.email.length > 1) ? oldData.email : '' %>">
+            <!-- MENSAJE DE ERROR -->
+            <% const errorEmail = errors.find(e => e.path === 'email');%>
+            <% if (errorEmail) { %>
+                <span class="error-msg">
+                    <%= errorEmail.msg %>
+                </span>
+            <% } %>
+        </div>
         </div>
 
         <div>
@@ -50,6 +79,12 @@
                     accept="image/*"
             >
             <small> Opcional. maximo 5MB. Formatos: JPG, PNG, GIF </small>
+            <% const errorImagen = errors.find(e => e.path === 'imagen_usuario'); %>
+            <% if (errorImagen) { %>
+                <span class="error-msg">
+                    <%= errorImagen.msg %>
+                </span>
+            <% } %>
         </div>
 
         <button type="submit">Crear Usuario</button>
