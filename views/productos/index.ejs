@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+  <%- include('../partials/header',{h1:h1}) %>
+
+  <div>
+    <% if ( productos.length) { %>
+    <% productos.forEach(producto=> { %>
+    <div>
+      <h3><a href="/productos/<%= producto.id %>">
+          <%= producto.nombre %>
+        </a></h3>
+      <p>
+        <%= producto.precio %>
+      </p>
+      <p>
+        <%= producto.descripcion %>
+      <p>
+      <h3>Dueño:</h3>
+      <a href="/usuarios/<%= producto.dueño.id %>">
+        <%= producto.dueño.nombre %>
+      </a></p>
+      <div>
+        <h3>Categorias:</h3>
+        <% if (producto.categorias.length> 0) { %>
+        <% producto.categorias.forEach(categoria=> { %>
+        <a href="/categorias/<%= categoria.id %>">
+          <%= categoria.nombre %>
+        </a>
+        <% }) %>
+
+        <% }else{ %>
+        <p>Sin categorias</p>
+        <% } %>
+      </div>
+    </div>
+    <% }) %>
+    <% }else{ %>
+    <p>No hay productos</p>
+    <% } %>
+  </div>
+
+</body>
+
+</html>

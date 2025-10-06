@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <form action="/usuarios/create" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre">
+        </div>
+
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+        </div>
+
+        <div>
+            <label for="imagen_usuario"> Imagen de perfil</label>
+            <input type="file"
+                    id="imagen_usuario"
+                    name="imagen_usuario" 
+                    accept="image/*"
+            >
+            <small> Opcional. maximo 5MB. Formatos: JPG, PNG, GIF </small>
+        </div>
+
+        <button type="submit">Crear Usuario</button>
+        <a href="/usuarios"> Cancelar </a>
+
+    </form>
+</body>
+</html>

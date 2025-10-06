@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <%- include('../partials/header',{h1:h1}) %>
+
+    <form action="/productos/create" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre">
+        </div>
+        <div>
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" step="0.01">
+        </div>
+        <div>
+            <label for="descripcion">Descripcion:</label>
+            <textarea name="descripcion" id="descripcion"></textarea>
+        </div>
+        <div>
+            <label for="usuario_id">Dueño</label>
+            <select name="usuario_id" id="usuario_id">
+                <option value=""> Seleccionar Usuario</option>
+                <% usuarios.forEach(usuario => { %>
+                    <option value="<%= usuario.id %>"><%= usuario.nombre %></option>
+                <% }) %>
+            </select>
+        </div>
+
+        <!-- agregamos campo poara multiples archivos -->
+         <div>
+            <label for="imagenes_producto">Imagenes del producto (1-5)</label>
+            <input  type="file"
+                    id="imagenes_producto"
+                    name="imagenes_producto"
+                    accept="image/*"
+                    multiple
+                    required
+            >
+            <small>Selecciona entre 1 y 5 imagenes. Maximo 5 MB cada una. Formatos permitidos JPG, PNG y GIF</small>
+         </div>
+
+        <div>
+            <label for="usuario_id">Categorias</label>
+            <% categorias.forEach(categoria => { %>
+                <div>
+                    <input  type="checkbox"
+                            id="cat_<%=categoria.id%>"
+                            name="categorias"
+                            value="<%= categoria.id %>"
+                    >
+                    <label for="cat_<%=categoria.id%>"><%= categoria.nombre %></label>
+                </div>
+            <% }) %>
+        </div>
+
+        <button type="submit"> Crear Producto</button>
+        <a href="/productos">cancelar</a>
+
+
+    </form>
+</body>
+</html>

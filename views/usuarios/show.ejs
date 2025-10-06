@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div>
+
+        <% if (usuario.imagen) { %>
+            <!-- si tiene umagen, la mostramos -->
+             <div style="text-align: center; margin-bottom: 20px;">
+                <img src="/images/usuarios/<%= usuario.imagen %>" alt="Perfil de: <%= usuario.nombre %>" style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%; margin:0 auto;display: flex; align-items: center;justify-content:center;">
+             </div>
+        <% } else { %>
+            <!-- si no tiene imagen, muestro un placehgolder, o si queres agrega una imagen de esas q son un tipito en gris -->
+             <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 200px; height: 200px; background: #f0f0f0;border-radius: 50%; margin:0 auto;display: flex; align-items: center;justify-content:center;">
+                    <span>Sin imagen</span>
+                </div>
+             </div>
+        <% } %>
+        <p>Usuario:<%= usuario.nombre %></p>
+        <p>Email: <%= usuario.email %></p>
+        <p>Id: <%= usuario.id %></p>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a href="/usuarios"> Volver a usuarios</a>
+        <a href="/usuarios/create" style="margin-left: 10px;"> Crear nuevo Usuario</a>
+    </div>
+ 
+</body>
+</html>
