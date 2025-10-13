@@ -54,8 +54,8 @@ const userController = {
         res.render('usuarios/create',{
             title: 'Crear Usuario',
             h1: 'Nuevo Usuario',
-            errors: [], ///AGREGO
-            oldData: {} // AGREGO
+            errors: [],
+            oldData: {}
         })
     },
     store: async(req, res) => {
@@ -97,13 +97,13 @@ const userController = {
         } catch (error) {
             console.log('Error creando usuario:', error);
 
-           // luego redirijo nmuevamente a el formulario de creacion, para que lo vuelva a intentar
-            res.render('usuarios/create', {
-                errors: [{ msg: 'Error al crear usuario' }],
-                oldData: req.body,
-                title: 'Crear Usuario',
+            res.render('usuarios/create',{
+                errors: [{msg:'Error creando Usuario'}],
+                oldData:req.body,
+                title: "Crear Usuario",
                 h1: "Nuevo Usuario"
-            });
+            });       
+            
         }
     }
     

@@ -86,13 +86,14 @@ const productoController = {
                 title: 'Crear Producto',
                 h1: 'Nuevo Producto',
                 usuarios: usuarios,
-                categorias: categorias,
-                errors: [],      // AGREGAR
-                oldData: {}      // AGREGAR
-            });
+                categorias:categorias,
+                errors: [],
+                oldData: {}        
+            })
         } catch (error) {
-            console.log('Error cargando formulario:', error);
+            console.log("Error cargandoi el formulario:", error);
             res.redirect('/productos');
+            
         }
     },
     store: async (req,res) => {
@@ -136,18 +137,17 @@ const productoController = {
             res.redirect(`/productos/${nuevoProducto.id}`)
         } catch (error) {
             console.log('Error al crear producto:', error); // Agregado para debugging
-             // Renderizar formulario con error
             const usuarios = await Usuario.findAll();
-            const categorias = await Categoria.findAll();
+            const categorias =  await Categoria.findAll();
 
-            res.render('productos/create', {
-                errors: [{ msg: 'Error al crear producto' }],
+            return res.render('productos/create', {
+                errors: errors.array(),
                 oldData: req.body,
                 title: 'Crear Producto',
                 h1: 'Nuevo Producto',
-                usuarios: usuarios,
-                categorias: categorias
-            });
+                usuarios,
+                categorias
+            })
         }
     },
     edit: async (req, res ) => {
