@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <%- include('../partials/header', {h1: h1}) %>
+
+    <div style="max-width: 500px; margin: 50px auto; padding: 30px; border: 1px solid #ddd; border-radius: 8px;">
+        <h2> Crear Cuenta</h2>
+
+        <% if (errors.length > 0) { %>
+            <div style="background: #ffe6e6; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <strong> Por favor corrige los siguientes errores:</strong>
+                <ul>
+                    <% errors.forEach(error => { %>
+                        <li><%= error.msg %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+
+        <form action="/auth/register" method="POST">
+            <div style="margin-bottom: 15px;">
+                <label for="nombre"> Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="<%= oldData.nombre || '' %>" style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="email"> Email:</label>
+                <input type="text" id="email" name="email" value="<%= oldData.email || '' %>" style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="password"> Contraseña:</label>
+                <input type="text" id="password" name="password"  style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
+                <small style="color: #666;"> Minimo 6 caracteres </small>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                Registrarse
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px;">
+            ya tienes cuenta? <a href="/auth/login" style="color: #007bff;"> Inicia sesion</a>
+        </p>
+    </div>
+</body>
+</html>

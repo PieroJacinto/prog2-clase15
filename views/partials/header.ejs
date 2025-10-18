@@ -7,8 +7,28 @@
     <a href="/upload/form">Upload</a>
     <a href="/productos"> Productos</a>
     <a href="/usuarios">Usuarios</a>
-    <a href="/productos/create">+ Nuevo Producto</a>
-    <a href="/usuarios/create">+ Nuevo Usuario</a>
+
+    <% if(session && session.userId){ %>
+      <!-- Usuario logueado -->
+      <a href="/productos/create">+ Nuevo Producto</a>
+      <a href="/usuarios/create">+ Nuevo Usuario</a>
+      <span style="margin: 0 10px; color: #333;">
+        Hola, <%= session.userName %>!
+      </span>
+
+      <form action="/auth/logout" method="POST" style="display: inline;">
+        <button type="submit" style="background: #dc3545; color: white; padding: 5px 10px; border: none; border-radius: 8px;">
+            Cerrar Sesión
+        </button>
+      </form>
+      
+    <% } else {%>
+      <!-- Usuario no Logueado -->
+      <a href="/auth/login"> Login </a>
+      <a href="/auth/register"> Registrate </a> 
+    <% } %>
+
+
   </nav>
   <hr />
 </header>

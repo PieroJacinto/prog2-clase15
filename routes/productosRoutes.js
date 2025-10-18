@@ -25,3 +25,4 @@ router.get('/:id', productoController.show )
 
 
 module.exports = router;
+
