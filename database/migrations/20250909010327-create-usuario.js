@@ -18,6 +18,21 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      // ⬇️ AGREGAR ESTOS CAMPOS
+      password: {
+        type: Sequelize.STRING(255),
+        allowNull: false
+      },
+      rol: {
+        type: Sequelize.ENUM('user', 'admin'),
+        allowNull: false,
+        defaultValue: 'user'
+      },
+      imagen: {
+        type: Sequelize.STRING(255),
+        allowNull: true
+      },
+      // ⬆️ FIN DE CAMPOS NUEVOS
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

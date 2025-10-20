@@ -37,6 +37,18 @@
                 <input type="text" id="password" name="password"  style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
                 <small style="color: #666;"> Minimo 6 caracteres </small>
             </div>
+            <!-- Confirmar contraseña -->
+            <div class="form-group">
+                <label for="password_confirmation">Confirmar contraseña *</label>
+                <input 
+                    type="password" 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    class="form-control <%= errors.find(e => e.path === 'password_confirmation') ? 'is-invalid' : '' %>"
+                    required
+                >
+                <small class="form-text">Las contraseñas deben coincidir</small>
+            </div>
 
             <button type="submit" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
                 Registrarse

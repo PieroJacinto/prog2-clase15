@@ -1,113 +1,44 @@
-const path = require("path");
-const db = require('../database/models');
-const { log } = require("console");
-const fs = require('fs'); // agregamos para manejar archivos
+const { Usuario } = require('../database/models');
 
 const userController = {
+    // Listar todos los usuarios
     index: async (req, res) => {
         try {
-            const usuarios = await db.Usuario.findAll({
-                order:[['created_at', 'DESC']]
+            const usuarios = await Usuario.findAll();
+            res.render('usuarios/index', {
+                title: 'Usuarios',
+                h1: 'Lista de Usuarios',
+                usuarios
             });
-            console.log('usuarios: ', JSON.stringify(usuarios, null, 4 ));
-            res.render('usuarios/index',{
-                title: 'Usuarios desde la BD',
-                usuarios: usuarios,
-                h1: 'Usuarios desde la BD'
-            })
-        
         } catch (error) {
-            console.log("error obteniedo los usuarios de la db: ", error.message);            
+            console.log('ERROR AL LISTAR USUARIOS:', error);
+            res.status(500).send('Error al obtener usuarios');
         }
     },
-    show: async(req, res ) => {
+
+    // Ver detalle de un usuario
+    show: async (req, res) => {
         try {
-            const usuario = await db.Usuario.findByPk(req.params.id)
-            
-            console.log(JSON.stringify(usuario, null, 4))
-            if(!usuario) {
-                return res.render('errors/404',{
-                    title: "ERROR",
-                    mensaje: "usuario no encontrado ",
-                    h1: "errores",
-                    url: req.url
-                })           
+            const { id } = req.params;
+            const usuario = await Usuario.findByPk(id);
+
+            if (!usuario) {
+                return res.status(404).send('Usuario no encontrado');
             }
-            res.render('usuarios/show',{
+
+            res.render('usuarios/show', {
                 title: `Usuario: ${usuario.nombre}`,
-                h1: "Mi pagina de detalle de usuario",
-                usuario: usuario
-            })
-        } catch ( e ) {
-            console.log("error obteniendo el usuario:", e);
-            res.render('errors/404', {
-                    title: "ERROR",
-                    mensaje: "error cargando usuario ",
-                    h1: "errores",
-                    url: req.url
-            })
-
-            
-        }
-    },
-    create: async(req,res) => {
-        res.render('usuarios/create',{
-            title: 'Crear Usuario',
-            h1: 'Nuevo Usuario',
-            errors: [],
-            oldData: {}
-        })
-    },
-    store: async(req, res) => {
-        try {
-            // paso 1: EXTRAER datos del formulario
-            const {nombre, email} = req.body;
-
-            // paso 2: CONSTRUIMOS objeto con datos basicos
-            const userData = {
-                nombre: nombre.trim(),
-                email: email.trim()
-            }
-
-            // paso 3: VERIFICAR si se subio una imagen
-            if( req.file){
-                console.log("req.file: ", req.file);
-                
-                //req.file existe cuando Multer proceso exiotopsamente un archivo
-                // si existe lo agregamos a nuestro userData
-                userData.imagen = req.file.filename; // agregamos el nombre del archivo
-
-                // solo para ver el req.file, y que info nos trae el archivo
-                console.log('archivo subido:', {
-                    originalName: req.file.originalname,
-                    fileName: req.file.filename,
-                    size: req.file.size,
-                    path: req.file.path
-                });
-
-                //paso 4: Creamos el usuario en la base de datos
-                const nuevoUsuario = await db.Usuario.create(userData);
-
-                console.log("Usuario creado: ", nuevoUsuario.id);
-                // redirigimos a el perfil del usuario
-                res.redirect(`/usuarios/${nuevoUsuario.id}`)               
-
-            }
-
+                h1: 'Detalle del Usuario',
+                usuario
+            });
         } catch (error) {
-            console.log('Error creando usuario:', error);
-
-            res.render('usuarios/create',{
-                errors: [{msg:'Error creando Usuario'}],
-                oldData:req.body,
-                title: "Crear Usuario",
-                h1: "Nuevo Usuario"
-            });       
-            
+            console.log('ERROR AL MOSTRAR USUARIO:', error);
+            res.status(500).send('Error al obtener usuario');
         }
     }
-    
-    
-}
+
+    // NOTA: create y store fueron eliminados
+    // El registro de usuarios se hace en AuthController
+};
 
 module.exports = userController;

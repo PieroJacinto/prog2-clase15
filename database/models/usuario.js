@@ -24,6 +24,13 @@ module.exports = ( sequelize, Datatypes ) => {
       type: Datatypes.STRING(255),
       allowNull: false
     },
+    // ⬇️⬇️⬇️ NUEVO CAMPO ROL ⬇️⬇️⬇️
+    rol: {
+        type: Datatypes.ENUM('user', 'admin'),
+        defaultValue: 'user',
+        allowNull: false,
+        comment: 'Rol del usuario: user (usuario normal) o admin (administrador)'
+    },
     imagen: {
       type: Datatypes.STRING(255),
       allowNull: true,
