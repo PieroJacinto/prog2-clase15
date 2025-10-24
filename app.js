@@ -70,7 +70,8 @@ app.use((req, res, next) => {
     res.status(404).render('errors/404', {
         title: "Página no encontrada",
         h1: "Error 404",
-        url: req.url
+        url: req.url,
+        mensaje: "Error 404"
     });
 });
 

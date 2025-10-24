@@ -23,7 +23,7 @@
             </div>
         <% } %>
 
-        <form action="/auth/register" method="POST">
+        <form action="/auth/register" method="POST" enctype="multipart/form-data">
             <div style="margin-bottom: 15px;">
                 <label for="nombre"> Nombre:</label>
                 <input type="text" id="nombre" name="nombre" value="<%= oldData.nombre || '' %>" style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
@@ -37,17 +37,26 @@
                 <input type="text" id="password" name="password"  style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
                 <small style="color: #666;"> Minimo 6 caracteres </small>
             </div>
-            <!-- Confirmar contraseña -->
-            <div class="form-group">
-                <label for="password_confirmation">Confirmar contraseña *</label>
-                <input 
-                    type="password" 
-                    id="password_confirmation" 
-                    name="password_confirmation" 
-                    class="form-control <%= errors.find(e => e.path === 'password_confirmation') ? 'is-invalid' : '' %>"
-                    required
+            <div style="margin-bottom: 15px;">
+                <label for="re-password">Confirmar Contraseña:</label>
+                <input type="text" id="re-password" name="re-password"  style="width: 100%; padding: 10px; border: solid 1px #ccc; border-radius: 4px;">
+                
+            </div>
+
+            <div>
+                <label for="imagen_usuario"> Imagen de perfil</label>
+                <input type="file"
+                        id="imagen_usuario"
+                        name="imagen_usuario" 
+                        accept="image/*"
                 >
-                <small class="form-text">Las contraseñas deben coincidir</small>
+                <small> Opcional. maximo 5MB. Formatos: JPG, PNG, GIF </small>
+                <% const errorImagen = errors.find(e => e.path== 'imagen_usuario') %>
+                <% if (errorImagen) { %>
+                    <span class="error-msg">
+                        <%= errorImagen.msg %>
+                    </span>
+                <% } %>
             </div>
 
             <button type="submit" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">

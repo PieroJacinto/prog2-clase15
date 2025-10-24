@@ -1,4 +1,7 @@
 'use strict';
+
+const { sequelize } = require('../models');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -18,7 +21,6 @@ module.exports = {
         allowNull: false,
         unique: true
       },
-      // ⬇️ AGREGAR ESTOS CAMPOS
       password: {
         type: Sequelize.STRING(255),
         allowNull: false
@@ -32,7 +34,6 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: true
       },
-      // ⬆️ FIN DE CAMPOS NUEVOS
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
